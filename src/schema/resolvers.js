@@ -8,9 +8,10 @@ module.exports = {
   },
 
   Mutation: {
-    createLink: async (root, data, {mongo: {Links}}) => {
-      const response = await Links.insert(data); // 3 For the createLink mutation you save the data via Links.insert.
-      return Object.assign({id: response.insertedIds[0]}, data); // 4 Still inside createLink, use insertedIds from MongoDB to return the final Link object from the resolver.
+    createLink: async (root, data, {mongo: {Links}, user}) => {
+        const newLink = Object.assign({postedById: user && user._id}, data)
+        const response = await Links.insert(newLink);
+        return Object.assign({id: response.insertedIds[0]}, newLink);
     },
 
     createUser: async (root, data, {mongo: {Users}}) => {
@@ -24,9 +25,21 @@ module.exports = {
       const response = await Users.insert(newUser);
       return Object.assign({id: response.insertedIds[0]}, newUser);
     },
+
+    signinUser: async (root, data, {mongo: {Users}}) => {
+      const user = await Users.findOne({email: data.email.email});
+      if (data.email.password === user.password) {
+        return {token: `token-${user.email}`, user};
+      }
+    },
   },
 
   Link: {
     id: root => root._id || root.id, // 5 MongoDB will automatically generate ids for you, which is great! Unfortunately, it calls them _id, while your schema calls them id.
+  },
+
+  User: {
+    // Convert the "_id" field from MongoDB to "id" from the schema.
+    id: root => root._id || root.id,
   },
 };

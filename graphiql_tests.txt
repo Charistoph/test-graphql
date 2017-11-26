@@ -32,3 +32,17 @@ mutation {
     name
   }
 }
+}
+
+mutation SignIn {
+  signinUser(email: {
+    email: "maria.bello@vtex.com",
+    password: "testpwd"
+  }) {
+    token
+    user {
+      name
+      id
+    }
+  }
+}

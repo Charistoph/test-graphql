@@ -9,14 +9,19 @@ const typeDefs = `
     description: String!
   }
 
+  type Query {
+    allLinks: [Link!]!
+  }
+
   type User {
     id: ID!
     name: String!
     email: String
   }
 
-  type Query {
-    allLinks: [Link!]!
+  type SigninPayload {
+      token: String
+      user: User
   }
 
   type Mutation {
@@ -28,6 +33,8 @@ const typeDefs = `
     # make it easier to integrate this server implementation later with the
     # code from the frontend tutorials.
     createUser(name: String!, authProvider: AuthProviderSignupData!): User
+
+    signinUser(email: AUTH_PROVIDER_EMAIL): SigninPayload!
   }
 
   input AuthProviderSignupData {
