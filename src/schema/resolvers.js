@@ -36,6 +36,10 @@ module.exports = {
 
   Link: {
     id: root => root._id || root.id, // 5 MongoDB will automatically generate ids for you, which is great! Unfortunately, it calls them _id, while your schema calls them id.
+    
+    postedBy: async ({postedById}, data, {mongo: {Users}}) => {
+        return await Users.findOne({_id: postedById});
+    },
   },
 
   User: {

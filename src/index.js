@@ -21,13 +21,6 @@ const start = async () => {
   // Call the MongoDB connect function and wait for it to finish.
   const mongo = await connectMongo();
   var app = express();
-  app.use('/graphql', bodyParser.json(), graphqlExpress({
-    context: {mongo}, // 4 Put the MongoDB collections into the context object. This is a special GraphQL object that gets passed to all resolvers, so it’s the perfect place to share code (such as connectors like this) between them.
-    schema
-  }));
-  app.use('/graphiql', graphiqlExpress({
-    endpointURL: '/graphql',
-  }));
 
   const buildOptions = async (req, res) => {
     const user = await authenticate(req, mongo.Users);
@@ -37,6 +30,15 @@ const start = async () => {
     };
   };
   app.use('/graphql', bodyParser.json(), graphqlExpress(buildOptions));
+
+  app.use('/graphql', bodyParser.json(), graphqlExpress({
+    context: {mongo}, // 4 Put the MongoDB collections into the context object. This is a special GraphQL object that gets passed to all resolvers, so it’s the perfect place to share code (such as connectors like this) between them.
+    schema
+  }));
+  app.use('/graphiql', graphiqlExpress({
+    endpointURL: '/graphql',
+    passHeader: `'Authorization': 'bearer token-foo@bar.com'`,
+  }));
 
   const PORT = 3000;
   app.listen(PORT, () => {

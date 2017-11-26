@@ -18,6 +18,7 @@ mutation {
   }
 }
 
+# create first user
 mutation {
   createUser(
     name: "Maria Bello",
@@ -32,7 +33,6 @@ mutation {
     name
   }
 }
-}
 
 mutation SignIn {
   signinUser(email: {
@@ -43,6 +43,59 @@ mutation SignIn {
     user {
       name
       id
+    }
+  }
+}
+
+# test create link with posted by
+mutation createLink {
+  createLink(
+    url: "https://www.howtographql.com/graphql-js",
+    description: "Testing stuff!",
+  ) {
+    id
+    url
+    description
+    postedBy {
+      name
+    }
+  }
+}
+
+# create test user for createdBy
+mutation createUser {
+  createUser(
+    name: "Test User",
+    authProvider: {
+      email: {
+        email: "foo@bar.com",
+        password: "foopwd"
+      }
+    }
+  ) {
+    id
+  }
+}
+
+mutation signinUser {
+  signinUser(email: {
+    email: "foo@bar.com",
+    password: "foopwd"
+  }) {
+    token
+  }
+}
+
+mutation createLink {
+  createLink(
+    url: "https://www.howtographql.com/",
+    description: "Testing stuff!",
+  ) {
+    id
+    url
+    description
+    postedBy {
+      name
     }
   }
 }
