@@ -1,0 +1,34 @@
+ Test with
+{
+  allLinks {
+    id
+    url
+    description
+  }
+}
+
+mutation {
+  createLink(
+    url: "https://www.howtographql.com/graphql-js/3-mutations/",
+    description: "Very amaze!",
+  ) {
+    id
+    url
+    description
+  }
+}
+
+mutation {
+  createUser(
+    name: "Maria Bello",
+    authProvider: {
+      email: {
+        email: "maria.bello@vtex.com",
+        password: "testpwd"
+      }
+    }
+  ) {
+    id
+    name
+  }
+}

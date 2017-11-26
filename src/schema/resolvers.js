@@ -12,31 +12,21 @@ module.exports = {
       const response = await Links.insert(data); // 3 For the createLink mutation you save the data via Links.insert.
       return Object.assign({id: response.insertedIds[0]}, data); // 4 Still inside createLink, use insertedIds from MongoDB to return the final Link object from the resolver.
     },
+
+    createUser: async (root, data, {mongo: {Users}}) => {
+      // You need to convert the given arguments into the format for the
+      // `User` type, grabbing email and password from the "authProvider".
+      const newUser = {
+          name: data.name,
+          email: data.authProvider.email.email,
+          password: data.authProvider.email.password,
+      };
+      const response = await Users.insert(newUser);
+      return Object.assign({id: response.insertedIds[0]}, newUser);
+    },
   },
 
   Link: {
     id: root => root._id || root.id, // 5 MongoDB will automatically generate ids for you, which is great! Unfortunately, it calls them _id, while your schema calls them id.
   },
 };
-
-// Test with
-//{
-//  allLinks {
-//    id
-//    url
-//    description
-//  }
-//}
-//
-
-//mutation {
-//  createLink(
-//    url: "https://www.howtographql.com/graphql-js/3-mutations/",
-//    description: "Very amaze!",
-//  ) {
-//    id
-//    url
-//    description
-//  }
-//}
-//
