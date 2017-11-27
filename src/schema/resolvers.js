@@ -1,6 +1,15 @@
 // simple resolver that returns the fixed contents of a mongodb database.
 var ObjectId = require('mongodb').ObjectID;
 
+const {URL} = require('url');
+
+function assertValidLink ({url}) {
+  try {
+    new URL(url);
+  } catch (error) {
+    throw new Error('Link validation error: invalid url.');
+  }
+};
 
 module.exports = {
   Query: {
@@ -15,6 +24,7 @@ module.exports = {
 
   Mutation: {
     createLink: async (root, data, {mongo: {Links}, user}) => {
+        assertValidLink(data);
         const newLink = Object.assign({postedById: user && user._id}, data)
         const response = await Links.insert(newLink);
         return Object.assign({id: response.insertedIds[0]}, newLink);
