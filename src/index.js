@@ -12,7 +12,7 @@ const schema = require('./schema');
 const {authenticate} = require('./authentication');
 // add dataloaders
 
-//const buildDataloaders = require('./dataloaders');
+const buildDataloaders = require('./dataloaders');
 
 // format error handler
 const formatError = require('./formatError');
@@ -30,8 +30,8 @@ const start = async () => {
   const buildOptions = async (req, res) => {
     const user = await authenticate(req, mongo.Users);
     return {
-//      dataloaders: buildDataloaders(mongo), // the resolvers need to use this new data loader instead of MongoDB when fetching users
       context: {
+        dataloaders: buildDataloaders(mongo), // the resolvers need to use this new data loader instead of MongoDB when fetching users
         mongo,
         user
       }, // This context object is passed to all resolvers.

@@ -123,3 +123,12 @@ query allLinks {
     }
   }
 }
+
+# query all votes
+query allVotes {
+  allVotes {
+    id
+    user {name}
+    link {url}
+  }
+}

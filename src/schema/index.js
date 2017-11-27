@@ -32,6 +32,7 @@ const typeDefs = `
   type Query {
     allLinks: [Link!]!
     allUsers: [User!]!
+    allVotes: [Vote!]!
   }
 
   type Mutation {

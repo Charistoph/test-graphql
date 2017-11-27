@@ -13,9 +13,5 @@ module.exports = ({Users}) =>({
   userLoader: new DataLoader(
     keys => batchUsers(Users, keys),
     {cacheKeyFn: key => key.toString()}, // cacheKeyFn: allows you to normalize keys so that they may be compared correctly for caching purposes
-//    {if (key != 'undefined') {
-//      cacheKeyFn: key => key.toString()}, // cacheKeyFn: allows you to normalize keys so that they may be compared correctly for caching purposes
-//    }
-//    console.log(key),
   ),
 });

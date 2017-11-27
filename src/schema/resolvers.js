@@ -27,6 +27,10 @@ module.exports = {
     allUsers: async (root, data, {mongo: {Users}}) => {
       return await Users.find({}).toArray();
     },
+
+    allVotes: async (root, data, {mongo: {Votes}}) => {
+      return await Votes.find({}).toArray();
+    },
   },
 
   Mutation: {
@@ -86,10 +90,12 @@ module.exports = {
       return await Votes.find({linkId: _id}).toArray();
     },
 
-//    // add user dataloader to increase performance
-//    postedBy: async ({postedById}, data, {dataloaders: {userLoader}}) => {
-//      return await userLoader.load(postedById);
-//    },
+    // add user dataloader to increase performance
+    postedBy: async ({postedById}, data, {dataloaders: {userLoader}}) => {
+      if (postedById != undefined) {
+        return await userLoader.load(postedById);
+      }
+    },
   },
 
   Vote: {
@@ -103,9 +109,9 @@ module.exports = {
       return await Links.findOne({_id: linkId});
     },
 
-//    // add user dataloader to increase performance
-//    user: async ({userId}, data, {dataloaders: {userLoader}}) => {
-//      return await userLoader.load(userId);
-//    },
+    // add user dataloader to increase performance
+    user: async ({userId}, data, {dataloaders: {userLoader}}) => {
+      return await userLoader.load(userId);
+    },
   },
 };
