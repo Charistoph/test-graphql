@@ -8,12 +8,14 @@ const typeDefs = `
     url: String!
     description: String!
     postedBy: User
+    votes: [Vote!]!
   }
 
   type User {
     id: ID!
     name: String!
     email: String
+    votes: [Vote!]!
   }
 
   type SigninPayload {

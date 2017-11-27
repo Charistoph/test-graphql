@@ -1,11 +1,14 @@
  Test with
-{
-  allLinks {
-    id
-    url
-    description
-  }
-}
+ query allUsers {
+   allUsers {
+     id
+     name
+     email
+     votes {
+       user {name}
+     }
+   }
+ }
 
 mutation {
   createLink(
@@ -110,10 +113,13 @@ mutation createVote {
 }
 
 # query all users
-query allUsers {
-  allUsers {
+query allLinks {
+  allLinks {
     id
-    name
-    email
+    url
+    description
+    votes {
+      user {name}
+    }
   }
 }
