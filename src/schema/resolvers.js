@@ -68,6 +68,11 @@ module.exports = {
     votes: async ({_id}, data, {mongo: {Votes}}) => {
       return await Votes.find({linkId: _id}).toArray();
     },
+
+//    // add user dataloader to increase performance
+//    postedBy: async ({postedById}, data, {dataloaders: {userLoader}}) => {
+//      return await userLoader.load(postedById);
+//    },
   },
 
   Vote: {
@@ -80,5 +85,10 @@ module.exports = {
     link: async ({linkId}, data, {mongo: {Links}}) => {
       return await Links.findOne({_id: linkId});
     },
+
+//    // add user dataloader to increase performance
+//    user: async ({userId}, data, {dataloaders: {userLoader}}) => {
+//      return await userLoader.load(userId);
+//    },
   },
 };

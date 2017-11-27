@@ -10,12 +10,14 @@ const {graphqlExpress, graphiqlExpress} = require('apollo-server-express');
 const schema = require('./schema');
 
 const {authenticate} = require('./authentication');
+// add dataloaders
 
-// 1
+//const buildDataloaders = require('./dataloaders');
+
+// 1 add mongo connector
 const connectMongo = require('./mongo-connector');
 
-// 2
-// Wrap the whole app setup code with an async function. That’s just so you can use async/await syntax, now that there’s an asynchronous step.
+// 2 Wrap the whole app setup code with an async function. That’s just so you can use async/await syntax, now that there’s an asynchronous step.
 const start = async () => {
   // 3
   // Call the MongoDB connect function and wait for it to finish.
@@ -25,6 +27,7 @@ const start = async () => {
   const buildOptions = async (req, res) => {
     const user = await authenticate(req, mongo.Users);
     return {
+//      dataloaders: buildDataloaders(mongo), // the resolvers need to use this new data loader instead of MongoDB when fetching users
       context: {mongo, user}, // This context object is passed to all resolvers.
       schema,
     };

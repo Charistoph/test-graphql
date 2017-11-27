@@ -1,0 +1,9 @@
+# To get ObjectID it needs to be required from mongodb
+var ObjectId = require('mongodb').ObjectID;
+
+# id matching doesnt work
+"message": "Cannot match against 'undefined' or 'null'.",
+http://www.jstips.co/en/javascript/use-destructuring-in-function-parameters/
+added = {}
+"message": "Cannot read property 'load' of undefined",
+couldnt solve error.
