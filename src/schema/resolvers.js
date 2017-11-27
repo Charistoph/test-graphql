@@ -1,9 +1,15 @@
 // simple resolver that returns the fixed contents of a mongodb database.
+var ObjectId = require('mongodb').ObjectID;
+
 
 module.exports = {
   Query: {
     allLinks: async (root, data, {mongo: {Links}}) => { // 1 The context object you’ve specified in that call to graphqlExpress is the third argument passed down to each resolver.
       return await Links.find({}).toArray(); // 2 For the allLinks query all you need is to call MongoDB’s find function in the Links collection, and then turn the results into an array.
+    },
+
+    allUsers: async (root, data, {mongo: {Users}}) => {
+      return await Users.find({}).toArray();
     },
   },
 
@@ -32,18 +38,39 @@ module.exports = {
         return {token: `token-${user.email}`, user};
       }
     },
-  },
 
-  Link: {
-    id: root => root._id || root.id, // 5 MongoDB will automatically generate ids for you, which is great! Unfortunately, it calls them _id, while your schema calls them id.
-    
-    postedBy: async ({postedById}, data, {mongo: {Users}}) => {
-        return await Users.findOne({_id: postedById});
+    createVote: async (root, data, {mongo: {Votes}, user}) => {
+      const newVote = {
+        userId: user && user._id,
+        linkId: new ObjectId(data.linkId),
+      };
+      const response = await Votes.insert(newVote);
+      return Object.assign({id: response.insertedIds[0]}, newVote);
     },
   },
 
   User: {
     // Convert the "_id" field from MongoDB to "id" from the schema.
     id: root => root._id || root.id,
+  },
+
+  Link: {
+    id: root => root._id || root.id, // 5 MongoDB will automatically generate ids for you, which is great! Unfortunately, it calls them _id, while your schema calls them id.
+
+    postedBy: async ({postedById}, data, {mongo: {Users}}) => {
+        return await Users.findOne({_id: postedById});
+    },
+  },
+
+  Vote: {
+    id: root => root._id || root.id,
+
+    user: async ({userId}, data, {mongo: {Users}}) => {
+      return await Users.findOne({_id: userId});
+    },
+
+    link: async ({linkId}, data, {mongo: {Links}}) => {
+      return await Links.findOne({_id: linkId});
+    },
   },
 };

@@ -88,8 +88,8 @@ mutation signinUser {
 
 mutation createLink {
   createLink(
-    url: "https://www.howtographql.com/",
-    description: "Testing stuff!",
+    url: "https://www.howtographql.com/1",
+    description: "ABC!",
   ) {
     id
     url
@@ -97,5 +97,23 @@ mutation createLink {
     postedBy {
       name
     }
+  }
+}
+
+# create a vote on an article
+mutation createVote {
+  createVote(linkId: "5a1af70f5531030d3e9a7bd4") {
+    id
+    user {name}
+    link {url}
+  }
+}
+
+# query all users
+query allUsers {
+  allUsers {
+    id
+    name
+    email
   }
 }
