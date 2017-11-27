@@ -132,3 +132,108 @@ query allVotes {
     link {url}
   }
 }
+
+
+#-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
+
+subscription Sub {
+  Link(filter: {
+    mutation_in:[CREATED]
+  }) {
+    node {
+      url
+      description
+    }
+  }
+}
+
+query allUsers {
+   allUsers {
+     id
+     name
+     email
+     votes {
+       user {name}
+     }
+   }
+ }
+
+mutation createUser {
+  createUser(
+    name: "Maria Bello",
+    authProvider: {
+      email: {
+        email: "maria.bello@vtex.com",
+        password: "testpwd"
+      }
+    }
+  ) {
+    id
+    name
+  }
+}
+
+mutation SignIn {
+  signinUser(email: {
+    email: "maria.bello@vtex.com",
+    password: "testpwd"
+  }) {
+    token
+    user {
+      name
+      id
+    }
+  }
+}
+
+mutation createLink {
+  createLink(
+    url: "https://www.howtographql.com/graphql-js",
+    description: "Testing stuff!",
+  ) {
+    id
+    url
+    description
+    postedBy {
+      name
+    }
+  }
+}
+
+mutation signinUser {
+  signinUser(email: {
+    email: "foo@bar.com",
+    password: "foopwd"
+  }) {
+    token
+  }
+}
+
+mutation createVote {
+  createVote(linkId: "5a1af70f5531030d3e9a7bd4") {
+    id
+    user {name}
+    link {url}
+  }
+}
+
+query allLinks {
+  allLinks {
+    id
+    url
+    description
+    votes {
+      user {name}
+    }
+  }
+}
+
+query allVotes {
+  allVotes {
+    id
+    user {name}
+    link {url}
+  }
+}

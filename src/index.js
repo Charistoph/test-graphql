@@ -1,3 +1,8 @@
+// requirements for subscriptions
+const {execute, subscribe} = require('graphql');
+const {createServer} = require('http');
+const {SubscriptionServer} = require('subscriptions-transport-ws');
+
 const express = require('express');
 
 // This package automatically parses JSON requests.
@@ -41,28 +46,25 @@ const start = async () => {
   };
   app.use('/graphql', bodyParser.json(), graphqlExpress(buildOptions));
 
-  app.use('/graphql', bodyParser.json(), graphqlExpress({
-    context: {mongo}, // 4 Put the MongoDB collections into the context object. This is a special GraphQL object that gets passed to all resolvers, so it’s the perfect place to share code (such as connectors like this) between them.
-    schema
-  }));
+  const PORT = 3000;
   app.use('/graphiql', graphiqlExpress({
     endpointURL: '/graphql',
+
+    // Replace this e-mail with another to test with another user in your db.
     passHeader: `'Authorization': 'bearer token-foo@bar.com'`,
+
+    subscriptionsEndpoint: `ws://localhost:${PORT}/subscriptions`,
   }));
 
-  const PORT = 3000;
-  app.listen(PORT, () => {
+  const server = createServer(app);
+  server.listen(PORT, () => {
+    SubscriptionServer.create(
+      {execute, subscribe, schema},
+      {server, path: '/subscriptions'},
+    );
     console.log(`Hackernews GraphQL server running on port ${PORT}.`)
   });
 };
 
 // 5
 start();
-
-var app = express();
-app.use('/graphql', bodyParser.json(), graphqlExpress({schema}));
-
-// http://localhost:3000/graphiql
-app.use('/graphiql', graphiqlExpress({
-  endpointURL: '/graphql',
-}));

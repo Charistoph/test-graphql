@@ -1,3 +1,6 @@
+// require Subscription (APIs)
+const pubsub = require('../pubsub');
+
 // simple resolver that returns the fixed contents of a mongodb database.
 var ObjectId = require('mongodb').ObjectID;
 
@@ -35,10 +38,14 @@ module.exports = {
 
   Mutation: {
     createLink: async (root, data, {mongo: {Links}, user}) => {
-        assertValidLink(data);
-        const newLink = Object.assign({postedById: user && user._id}, data)
-        const response = await Links.insert(newLink);
-        return Object.assign({id: response.insertedIds[0]}, newLink);
+      assertValidLink(data);
+      const newLink = Object.assign({postedById: user && user._id}, data)
+      const response = await Links.insert(newLink);
+
+      newLink.id = response.insertedIds[0]
+      pubsub.publish('Link', {Link: {mutation: 'CREATED', node: newLink}});
+
+      return newLink;
     },
 
     createUser: async (root, data, {mongo: {Users}}) => {
@@ -67,6 +74,12 @@ module.exports = {
       };
       const response = await Votes.insert(newVote);
       return Object.assign({id: response.insertedIds[0]}, newVote);
+    },
+  },
+
+  Subscription: {
+    Link: {
+      subscribe: () => pubsub.asyncIterator('Link'),
     },
   },
 
