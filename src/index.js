@@ -14,6 +14,9 @@ const {authenticate} = require('./authentication');
 
 //const buildDataloaders = require('./dataloaders');
 
+// format error handler
+const formatError = require('./formatError');
+
 // 1 add mongo connector
 const connectMongo = require('./mongo-connector');
 
@@ -28,7 +31,11 @@ const start = async () => {
     const user = await authenticate(req, mongo.Users);
     return {
 //      dataloaders: buildDataloaders(mongo), // the resolvers need to use this new data loader instead of MongoDB when fetching users
-      context: {mongo, user}, // This context object is passed to all resolvers.
+      context: {
+        mongo,
+        user
+      }, // This context object is passed to all resolvers.
+      formatError,
       schema,
     };
   };
